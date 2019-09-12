@@ -75,14 +75,15 @@
             android:id="@+id/sosBtn"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:background="@drawable/green_rounded_bg"
+            android:layout_margin="5dp"
+            android:background="@drawable/yellow_rounded_bg"
             android:ems="10"
             android:padding="10dp"
-            android:layout_margin="5dp"
-             android:text="SOS"
+            android:text="SOS"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/sendBtn"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/sendBtn"
@@ -91,6 +92,7 @@
             android:layout_margin="5dp"
             android:background="@drawable/yellow_circle"
             android:gravity="center"
+            android:visibility="invisible"
             android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

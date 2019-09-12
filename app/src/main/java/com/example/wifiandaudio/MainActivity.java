@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnRecordSent{
     private static final String TAG = "MainActivity";
     Button sosBtn;
     ImageButton sendtxt;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
               // record voice for 20 seconds and save it
+
                 if(myAudioRecorder==null)
                 setupRecorder();
                 try {
@@ -79,9 +80,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             // yourMethod();
                             stopRecording();
+                            sendtxt.setVisibility(View.VISIBLE);
 
                         }
-                    }, 20000);
+                    }, 10000);
 
                 } catch (IllegalStateException ise) {
                     // make something ...
@@ -103,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
                 backgroundTsk.execute("192.168.1.6",outputFile);
             }
         });
-
-        Thread myThread=new Thread(new MyServer());
+        MyServer myServer=new MyServer();
+        myServer.setOnRecordSent(this);
+        Thread myThread=new Thread(myServer);
         myThread.start();
     }
 
@@ -138,107 +141,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    class MyServer implements Runnable{
-
-        ServerSocket ss;
-        Socket s;
-        DataInputStream dis;
-        String message;
-        Handler handler=new Handler();
-        @Override
-        public void run() {
-            try {
-                ss=new ServerSocket(9700);
-                while (true){
-                    if(ss==null){
-                        break;
-                    }
-                    s=ss.accept();
-                    dis=new DataInputStream(s.getInputStream());
-
-                    //message=dis.
-                    Log.d(TAG, "run: ////////////////////////////////"+s.getInputStream().toString());
-                    final File someFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+ UUID.randomUUID().toString()+"sos.3gp");
-
-                    FileOutputStream fos = new FileOutputStream(someFile);
-
-                    fos.write(readBytes(s.getInputStream()));
-                    fos.flush();
-                    fos.close();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
 
 
-                            Record record=new Record();
-                            record.setAudioPath(someFile.getPath());
-                            records.add(record);
-                            adapter.notifyDataSetChanged();
-
-
-
-                        }
-                    });
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    class BackgroundTsk extends AsyncTask<String,Void,Void> {
-
-        Socket socket;
-        DataOutputStream dos;
-
-
-        @Override
-        protected Void doInBackground(String... strings) {
-
-            try {
-
-                socket=new Socket(strings[0],9700);
-                dos=new DataOutputStream(socket.getOutputStream());
-                //dos.writeUTF(strings[1]);
-
-                File f = new File(strings[1]);
-                FileInputStream fis = new FileInputStream(f);
-                Log.d(TAG, "doInBackground: "+fis.toString());
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] buf = new byte[1024];
-                try {
-                    for (int readNum; (readNum = fis.read(buf)) != -1;) {
-                        bos.write(buf, 0, readNum); //no doubt here is 0
-                        //Writes len bytes from the specified byte array starting at offset off to this byte array output stream.
-                        System.out.println("read " + readNum + " bytes,");
-                    }
-                } catch (IOException ex) {
-
-                }
-                byte[] bytes = bos.toByteArray();
-             dos.write(bytes);
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            finally {
-                try {
-                    socket.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    dos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-            return null;}
-    }
 
 
     @Override
@@ -261,21 +165,10 @@ public class MainActivity extends AppCompatActivity {
         myAudioRecorder.setOutputFile(outputFile);
     }
 
-    public byte[] readBytes(InputStream inputStream) throws IOException {
-        // this dynamically extends to take the bytes you read
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 
-        // this is storage overwritten on each iteration with bytes
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        // we need to know how may bytes were read to write them to the byteBuffer
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-
-        // and then we can return your byte array.
-        return byteBuffer.toByteArray();
+    @Override
+    public void onRecordSent(Record record) {
+        records.add(record);
+        adapter.notifyDataSetChanged();
     }
 }
