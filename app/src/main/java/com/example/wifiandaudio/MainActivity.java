@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
+//hihihihih
     private void sendRecordToServer() {
         File f = new File(outputFile);
         FileChannel in = null;
