@@ -4,56 +4,117 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/colorPrimary"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/iptxt"
+    <TextView
+        android:id="@+id/connectionStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="IP"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/messagetxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:text="Message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iptxt" />
-
     <Button
-        android:id="@+id/sendtxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messagetxt" />
-
-    <Button
-        android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play"
-        android:visibility="invisible"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendtxt" />
-
-    <Button
-        android:id="@+id/sosBtn"
+        android:id="@+id/toggleWifi"
         android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/green_rounded_bg"
+        android:text="Wifi On"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/discoverBtn"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connectionStatus" />
+
+    <Button
+        android:id="@+id/discoverBtn"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/yellow_rounded_bg"
+        android:text="Discover"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/toggleWifi"
+        app:layout_constraintTop_toBottomOf="@+id/connectionStatus" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/deviceList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="250dp"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:background="@drawable/recycler_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/messageLayout"
+        app:layout_constraintTop_toBottomOf="@+id/toggleWifi" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/messageLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SOS"
+        android:padding="5dp"
+        android:background="@drawable/linear_layout_complete_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/sosBtn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/green_rounded_bg"
+            android:ems="10"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+             android:text="SOS"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sendBtn"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/sendBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/yellow_circle"
+            android:gravity="center"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_send_black_24dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recordsList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/yellow_rounded_bg"
+        android:text="Play"
+        android:padding="5dp"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/messageLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deviceList" />
+
 
 </android.support.constraint.ConstraintLayout>

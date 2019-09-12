@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#1b5997</color>
+    <color name="colorPrimaryDark">#1b5997</color>
+    <color name="colorAccent">#45d1ff</color>
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="grey">#6D6E71</color>
+    <color name="lightGrey">#eeeeee</color>
+    <color name="lightGreyTransparent">#30eeeeee</color>
+    <color name="login_form_details_ligth">#00ffffff</color>
+    <color name="transparentBlack">#60000000</color>
+    <color name="transparentBlackDark">#80000000</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#F15A24</color>
 </resources>

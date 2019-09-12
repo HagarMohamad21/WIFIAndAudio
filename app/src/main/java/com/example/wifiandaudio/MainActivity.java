@@ -1,6 +1,7 @@
 package com.example.wifiandaudio;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -11,10 +12,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,17 +35,22 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    Button sendtxt,sosBtn;
-    EditText messagetxt,iptxt;
-    Button playBtn;
+    Button sosBtn;
+    ImageButton sendtxt;
+    RecyclerView recordList;
     final int PERMISSION_REQUEST=2000;
     private MediaRecorder myAudioRecorder;
     private MediaPlayer mediaPlayer;
     private String outputFile;
+    List<Record> records=new ArrayList<>();
+    Context mContext=MainActivity.this;
+    RecordsAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,14 +58,12 @@ public class MainActivity extends AppCompatActivity {
         if(!havePermission()){
             requestPermission();
         }
-        setupRecorder();
-        sendtxt=findViewById(R.id.sendtxt);
-        messagetxt=findViewById(R.id.messagetxt);
-        iptxt=findViewById(R.id.iptxt);
-        playBtn=findViewById(R.id.play);
+        sendtxt=findViewById(R.id.sendBtn);
+        recordList=findViewById(R.id.recordsList);
        sosBtn=findViewById(R.id.sosBtn);
 
-
+        setupRecorder();
+        populateList();
 
         sosBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: ****************"+outputFile);
                 BackgroundTsk backgroundTsk=new BackgroundTsk();
-                backgroundTsk.execute(iptxt.getText().toString(),outputFile);
+                backgroundTsk.execute("192.168.1.6",outputFile);
             }
         });
 
@@ -100,29 +108,13 @@ public class MainActivity extends AppCompatActivity {
         myThread.start();
     }
 
-
-//hihihihih
-    private void sendRecordToServer() {
-        File f = new File(outputFile);
-        FileChannel in = null;
-        try {
-            in = new FileInputStream(f).getChannel();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-//        mSocket.send("sTART");
-//
-//        sendAudioBytes(in);
-//
-//        mSocket.send(END);
-
-        try {
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void populateList() {
+         adapter=new RecordsAdapter(mContext,records);
+        recordList.setLayoutManager(new LinearLayoutManager(mContext));
+        recordList.setAdapter(adapter);
+        recordList.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL));
     }
+
 
     private void stopRecording() {
         myAudioRecorder.stop();
@@ -176,22 +168,15 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            playBtn.setVisibility(View.VISIBLE);
-                            playBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                   mediaPlayer=new MediaPlayer();
-                                    try {
-                                        Log.d(TAG, "onClick: "+someFile.getPath());
-                                        mediaPlayer.setDataSource(someFile.getPath());
-                                        mediaPlayer.prepare();
-                                       // mediaPlayer.start();
-                                        mediaPlayer.start();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
+
+
+                            Record record=new Record();
+                            record.setAudioPath(someFile.getPath());
+                            records.add(record);
+                            adapter.notifyDataSetChanged();
+
+
+
                         }
                     });
                 }
